@@ -17,10 +17,10 @@ class ChronometerApp:
         self.image_label = tk.Label(master, image=self.photo, bg='#2E2E2E')
         self.image_label.place(x=40, y=40) 
         
-        self.amal_label = tk.Label(master, text="AMAL Yazılım Geliştirme Ekibi", font=("Arial", 12), bg='#2E2E2E', fg='#30D5C8')
-        self.amal_label.place(x=20, y=200)  # Position
+        self.amal_label = tk.Label(master, text="AMAL Dijital Sözlük", font=("Arial", 15), bg='#2E2E2E', fg='#30D5C8')
+        self.amal_label.place(x=40, y=210)  # Position
 
-        self.amal_label = tk.Label(master, text="QUIZ SHOW", font=("Impact", 25), bg='#2E2E2E', fg='white')
+        self.amal_label = tk.Label(master, text="Sözcük Yarışması", font=("Impact", 25), bg='#2E2E2E', fg='white')
         self.amal_label.place(x=20, y=250)
 
         self.label_time = tk.Label(master, text="Süre girin:", bg='#2E2E2E', fg='white')
