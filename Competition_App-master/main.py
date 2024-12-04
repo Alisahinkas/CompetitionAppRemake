@@ -84,7 +84,7 @@ class ChronometerApp:
 
 
         self.pdf_frame = tk.Frame(master)
-        self.pdf_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=20)
+        self.pdf_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=50)
 
         self.canvas = tk.Canvas(self.pdf_frame, bg='#2E2E2E')
         self.scrollbar = tk.Scrollbar(self.pdf_frame, orient="vertical", command=self.canvas.yview)
@@ -128,7 +128,12 @@ class ChronometerApp:
             page = pdf_document[page_num] 
             pix = page.get_pixmap() 
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples) 
-            img = img.resize((int(400 * self.zoom_factor), int(400 * self.zoom_factor)))  
+            
+            original_width, original_height = img.size
+            new_width = int(400 * self.zoom_factor)
+            new_height = int((new_width / original_width) * original_height)  
+            
+            img = img.resize((new_width, new_height))  
             pdf_image = ImageTk.PhotoImage(img) 
             self.pdf_images.append(pdf_image)  
 
