@@ -6,7 +6,7 @@ import fitz
 class ChronometerApp:
     def __init__(self, master):
         self.master = master
-        self.master.title("QuizShow")
+        self.master.title("Yarışma Uygulaması")
         self.master.configure(bg='#2E2E2E')
         self.master.geometry("800x600")
 
@@ -28,6 +28,16 @@ class ChronometerApp:
 
         self.entry_time = tk.Entry(master, bg='#2E2E2E', fg='white')
         self.entry_time.pack()
+
+        # Add buttons to set the timer
+        self.set_30_button = tk.Button(master, text="30", command=lambda: self.set_timer(30), bg='#404040', fg='white', height=2, width=5)
+        self.set_30_button.place(x=350, y=140)  # Adjust x and y for positioning
+
+        self.set_20_button = tk.Button(master, text="20", command=lambda: self.set_timer(20), bg='#404040', fg='white', height=2, width=5)
+        self.set_20_button.place(x=400, y=140)  # Adjust x and y for positioning
+
+        self.set_10_button = tk.Button(master, text="10", command=lambda: self.set_timer(10), bg='#404040', fg='white', height=2, width=5)
+        self.set_10_button.place(x=450, y=140)  # Adjust x and y for positioning
 
         self.countdown_frame = tk.Frame(master, bg='#404040')
         self.countdown_frame.pack(side=tk.TOP, pady=(10, 0))
@@ -55,6 +65,7 @@ class ChronometerApp:
         self.entry_point_change.pack()
 
         self.team_scores = [0, 0, 0, 0, 0]
+        self.team_names = [f"Takım {i + 1}" for i in range(5)]  # Initialize team names
 
         self.team_labels = []
         self.team_buttons_plus = []
@@ -64,8 +75,10 @@ class ChronometerApp:
             frame = tk.Frame(self.score_frame, bg='#2E2E2E')
             frame.pack(pady=10)  
 
-            label = tk.Label(frame, text=f"Takım {i + 1}", bg='#2E2E2E', fg='white') 
-            label.pack(side=tk.LEFT)
+            # Replace label with Entry for team name
+            entry_field = tk.Entry(frame, bg='#2E2E2E', fg='white', borderwidth=0, width=8)  # Set width to 20 characters
+            entry_field.insert(0, self.team_names[i])  # Set default text
+            entry_field.pack(side=tk.LEFT)
 
             button_minus = tk.Button(frame, text="-", command=lambda idx=i: self.update_score(idx, -self.get_point_change()), bg='#404040', fg='white', height=2, width=5)
             button_minus.pack(side=tk.LEFT)
@@ -82,9 +95,8 @@ class ChronometerApp:
 
         self.running = False
 
-
         self.pdf_frame = tk.Frame(master)
-        self.pdf_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=50)
+        self.pdf_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, pady=90)
 
         self.canvas = tk.Canvas(self.pdf_frame, bg='#2E2E2E')
         self.scrollbar = tk.Scrollbar(self.pdf_frame, orient="vertical", command=self.canvas.yview)
@@ -107,12 +119,16 @@ class ChronometerApp:
 
         self.zoom_factor = 1.0  
 
-        self.zoom_in_button = tk.Button(master, text="Zoom In", command=self.zoom_in, bg='#404040', fg='white', height=2, width=15)
+        self.zoom_in_button = tk.Button(master, text="Yakınlaştır", command=self.zoom_in, bg='#404040', fg='white', height=2, width=15)
         self.zoom_in_button.pack(pady=(10, 0))
 
-
-        self.zoom_out_button = tk.Button(master, text="Zoom Out", command=self.zoom_out, bg='#404040', fg='white', height=2, width=15)
+        self.zoom_out_button = tk.Button(master, text="Uzaklaştır", command=self.zoom_out, bg='#404040', fg='white', height=2, width=15)
         self.zoom_out_button.pack(pady=(10, 0))
+
+        # Bind mouse wheel event to the canvas
+        self.canvas.bind_all("<MouseWheel>", self.on_mouse_wheel)  # For Windows and Mac
+        self.canvas.bind_all("<Button-4>", self.on_mouse_wheel)  # For Linux
+        self.canvas.bind_all("<Button-5>", self.on_mouse_wheel)  # For Linux
 
     def load_pdf(self):
         file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
@@ -177,7 +193,7 @@ class ChronometerApp:
                 self.running = False  
                 self.reset_chronometer()
             else:
-                self.countdown_var.set(f"Kalan süre: {self.remaining_time:.2f} saniye")
+                self.countdown_var.set(f"Kalan süre : {self.remaining_time:.2f} saniye")
                 self.remaining_time -= 0.01
                 self.master.after(10, self.update_countdown)
 
@@ -199,6 +215,13 @@ class ChronometerApp:
         except ValueError:
             return 10
 
+    def on_mouse_wheel(self, event):
+        # Scroll the canvas based on the mouse wheel movement
+        self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+    def set_timer(self, seconds):
+        self.entry_time.delete(0, tk.END)  # Clear the current entry
+        self.entry_time.insert(0, str(seconds))  # Set the new time
 
 if __name__ == "__main__":
     root = tk.Tk()
